@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>فارسی نویس</title>
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet" type="text/css" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Vazir', Tahoma, sans-serif;
+      direction: rtl;
+      background: linear-gradient(135deg, #a8edea, #fed6e3);
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    h1 {
+      font-size: 2.8rem;
+      margin-bottom: 25px;
+      color: #333;
+      text-shadow: 0 2px 4px rgba(255,255,255,0.7);
+    }
+    textarea {
+      width: 100%;
+      max-width: 400px;
+      height: 140px;
+      font-size: 1.4rem;
+      padding: 15px;
+      border-radius: 15px;
+      border: none;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      resize: none;
+      outline: none;
+      background-color: #fff;
+      color: #555;
+    }
+    textarea:focus {
+      box-shadow: 0 6px 25px rgba(0,0,0,0.2);
+    }
+    button {
+      margin-top: 20px;
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      font-size: 1.6rem;
+      padding: 15px 40px;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(76,175,80,0.4);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      font-weight: 600;
+    }
+    button:hover {
+      background-color: #45a049;
+      box-shadow: 0 10px 25px rgba(69,160,73,0.6);
+    }
+    #result {
+      margin-top: 30px;
+      width: 100%;
+      max-width: 400px;
+      min-height: 80px;
+      background-color: #fff;
+      border-radius: 15px;
+      padding: 20px;
+      font-size: 2rem;
+      color: #4CAF50;
+      box-shadow: 0 8px 25px rgba(76,175,80,0.2);
+      white-space: pre-wrap;
+      direction: rtl;
+      unicode-bidi: bidi-override;
+      user-select: text;
+      font-family: 'Vazir', Tahoma, sans-serif;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #result:hover {
+      background-color: #e0f2e9;
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: 2.2rem; }
+      textarea { height: 120px; font-size: 1.2rem; }
+      button { font-size: 1.4rem; padding: 12px 30px; }
+      #result { font-size: 1.6rem; padding: 15px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>فارسی نویس</h1>
+  <textarea id="inputText" placeholder="متن خود را وارد کنید..."></textarea>
+  <button onclick="convert()">فارسی نویسی</button>
+  <div id="result" title="برای کپی کلیک کنید"></div>
+  <script>
+    const brokenLetters = {
+      'ا': 'ﺎ', 'ب': 'ﺐ', 'پ': 'ﭗ', 'ت': 'ﺖ', 'ث': 'ﺚ',
+      'ج': 'ﺞ', 'چ': 'ﭻ', 'ح': 'ﺢ', 'خ': 'ﺦ', 'د': 'ﺪ',
+      'ذ': 'ﺬ', 'ر': 'ﺮ', 'ز': 'ﺰ', 'ژ': 'ﮋ', 'س': 'ﺲ',
+      'ش': 'ﺶ', 'ص': 'ﺺ', 'ض': 'ﺾ', 'ط': 'ﻂ', 'ظ': 'ﻆ',
+      'ع': 'ﻊ', 'غ': 'ﻎ', 'ف': 'ﻒ', 'ق': 'ﻖ', 'ک': 'ﻚ',
+      'گ': 'ﮔ', 'ل': 'ﻞ', 'م': 'ﻢ', 'ن': 'ﻦ', 'و': 'ﻮ',
+      'ه': 'ﻪ', 'ی': 'ﻲ', ' ': ' ', '،': '،', '؟': '؟',
+      '.': '.', '!': '!'
+    };
+    function convert() {
+      const input = document.getElementById('inputText').value;
+      if (!input.trim()) {
+        document.getElementById('result').textContent = 'لطفاً متنی وارد کنید.';
+        return;
+      }
+      let reversed = input.split('').reverse().join('');
+      let output = '';
+      for (const ch of reversed) {
+        output += brokenLetters[ch] || ch;
+      }
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = output;
+    }
+    document.getElementById('result').addEventListener('click', function () {
+      const text = this.textContent;
+      if (!text || text === 'لطفاً متنی وارد کنید.') return;
+      const tempInput = document.createElement('textarea');
+      tempInput.value = text;
+      tempInput.setAttribute('readonly', '');
+      tempInput.style.position = 'absolute';
+      tempInput.style.left = '-9999px';
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        alert('✅ متن کپی شد!');
+      } catch (err) {
+        alert('❌ کپی نشد. لطفاً دستی کپی کن.');
+      }
+      document.body.removeChild(tempInput);
+    });
+  </script>
+</body>
+</html>
